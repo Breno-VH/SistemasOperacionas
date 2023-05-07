@@ -1,12 +1,12 @@
 /*
-    anotacoes:
-    -link do codigo original: https://github.com/sp0oks/multithread-drifting
+anotacoes:
+-link do codigo original: https://github.com/sp0oks/multithread-drifting
 
-    -nao parece ser deterministico, muita dificuldade de fazer isso rodas no meu mac :c 
+-nao parece ser deterministico, muita dificuldade de fazer isso rodas no meu mac :c 
 
-	- como podemos garantir a justica entre as threads passageiras?
+- como podemos garantir a justica entre as threads passageiras?
 
-	- mesmo generalizando para N carros, nao precisamos nos preocupar com deadlock
+- mesmo generalizando para N carros, nao precisamos nos preocupar com deadlock
 */
 
 #include <stdio.h>
