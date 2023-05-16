@@ -4,11 +4,6 @@ anotacoes:
 
 -ajeitar os prints
 
--consertar o current ride
-
--colocar currentBoardingCar currentUnboardingCar
-
--programa nao termina direito por conta da loading area e unloading
 */
 
 #include <stdio.h>
@@ -19,9 +14,10 @@ anotacoes:
 #include <time.h>
 
 // Maximum number of passenger threads available
-#define MAX_PASSENGERS 25
+#define MAX_PASSENGERS 15
 #define MAX_RIDES 3
 #define MAX_CARS 10
+#define MAX_CAPACITY 8
 
 
 /* Variables */
@@ -34,7 +30,9 @@ sem_t unboard_queue; // semaphore to ensure unboarding of C passenger threads
 sem_t all_unboarded; // binary semaphore to signal passenger threads for boarding
 sem_t loading_area[MAX_CARS];
 sem_t unloading_area[MAX_CARS];
+sem_t killRollerCoaster;
 
+pthread_t passenger[MAX_PASSENGERS];
 
 volatile int boarded = 0; // current number of passenger threads that have boarded
 volatile int unboarded = 0; // current number of passenger threads that have unboarded
@@ -45,8 +43,6 @@ volatile int capacity; // current capacity of the car thread
 volatile int total_cars;
 
 
-int currentBoardingCar;
-int currentUnboardingCar;
 
 char* line0;
 char* line0Busy;
@@ -58,19 +54,19 @@ int next(int pos) {
 	return (1 + pos) % total_cars;
 }
 
-void load(int id){
-	printf("Ride #%d will begin, time to load car %d!\n", current_ride+1, id+1);
+void load(int id, int run){
+	printf("Ride #%d of car %d wil begin, time to load!\n", run+1, id);
 	printf("This car's capacity is %d\n", capacity);
 	sleep(2);
 }
 void run(int id){
-	printf("The car %d is full, time to ride!\n", id+1);
+	printf("The car %d is full, time to ride!\n", id);
 	sleep(2);
-	printf("The car %d is now riding the roller coaster!\n", id+1);
+	printf("The car %d is now riding the roller coaster!\n", id);
 	sleep(5);
 }
 void unload(int id){
-	printf("The ride is over, time to unload car %d\n", id+1);
+	printf("The ride is over, time to unload car %d\n", id);
 	sleep(2);
 }
 void board(){
@@ -114,31 +110,31 @@ void unboard(){
 /* Thread Functions */
 void* carThread(void* id){
 	int i;
+	int myRun = 0;
 	int carId = (int) id;
 	// Run the roller coaster for <total_rides> times
-	while(current_ride < total_rides){
+	while(myRun < total_rides){
 		sem_wait(&loading_area[carId]);
-		load(id);
+		load(carId, myRun);
 		
 		for(i = 0; i < capacity; i++) sem_post(&board_queue); // Signal C passenger threads to board the car
 		sem_wait(&all_boarded); // Wait for all passengers to board
 		
 		sem_post(&loading_area[next(carId)]);
 		
-		run(id);
+		run(carId);
 
 		sem_wait(&unloading_area[carId]);
-		unload(id);
+		unload(carId);
 		
 		for(i = 0; i < capacity; i++) sem_post(&unboard_queue); // Signal the passengers in the car to unboard
 		sem_wait(&all_unboarded); // Tell the queue to start boarding again
 		printf("The car is now empty!\n\n");
 		sem_post(&unloading_area[next(carId)]);
 		
-		if (carId == total_cars-1) {
-			current_ride++;
-		}
+		myRun++;
 	}
+	if (carId == ((int)total_rides -1)) sem_post(&killRollerCoaster);
 	return NULL;
 }
 
@@ -170,12 +166,22 @@ void* passengerThread(){
     	return NULL;
 }
 
+void* executioner() {
+	int i = 0;
+	sem_wait(&killRollerCoaster);
+	for (i = 0; i < passengers; i++) {
+		pthread_join(passenger[i], NULL);
+	}
+	return NULL;
+}
+
+
 /* Main program */
 int main() {
 	// Set new instance of passenger threads, car capacity and total rides values
 	srand(time(NULL));
-	passengers = 2 + rand() % MAX_PASSENGERS;
-	capacity = 1 + rand() % (passengers - 1);
+	passengers = 2 + rand() % (MAX_PASSENGERS-2);
+	capacity = 1 + rand() % (MAX_CAPACITY - 1);
 	total_rides = 1 + rand() % MAX_RIDES;
 	total_cars = 2 + rand() % (MAX_CARS - 2);
 
@@ -185,8 +191,8 @@ int main() {
 	line1 = "  --|_   \\__'  _\\--";
 	line2 = "     --(*)——(*)--  ";
 
-
-	pthread_t passenger[passengers];
+	pthread_t executioner;
+	
 	pthread_t car[total_cars];
 	int i;
 	
@@ -198,7 +204,7 @@ int main() {
 		sem_init(&loading_area[i], 0, 0);
 		sem_init(&unloading_area[i], 0, 0);
 	} 
-
+	sem_init(&executioner, 0, 0);
 	sem_init(&board_queue, 0, 0);
 	sem_init(&all_boarded, 0, 0);
 	sem_init(&unboard_queue, 0, 0);
@@ -215,7 +221,8 @@ int main() {
 	for (i = 0; i < total_cars; i++) pthread_create(&car[i], NULL, carThread, (void*) i);
 	for(i = 0; i < passengers; i++) pthread_create(&passenger[i], NULL, passengerThread, NULL);
 	// Join the car thread when all rides have been completed
-	pthread_join(car, NULL);
+	for (i = 0; i < total_cars; i++) pthread_join(car[i], NULL);
+	pthread_join(executioner, NULL);
 	
 	printf("That's all rides for today, the roller coaster is shutting down.\n");
 
@@ -226,6 +233,10 @@ int main() {
 	sem_destroy(&all_boarded);
 	sem_destroy(&unboard_queue);
 	sem_destroy(&all_unboarded);
+	for (i = 0; i < total_cars; i++) {
+		sem_destroy(&loading_area[i]);
+		sem_destroy(&unloading_area[i]);
+	} 
 
 	return 0;
 }
