@@ -1,8 +1,8 @@
 /*
 anotacoes:
 -link do codigo original: https://github.com/sp0oks/multithread-drifting
-TODO
--colocar um mutex no print para nao ter problemas na visualizacao
+-problema grave: quando temos menos passageiros que capacidade o programa da uma quebradinha :)
+-ajeitar os prints
 
 */
 
@@ -151,7 +151,7 @@ void* passengerThread(void* id) {
 		boarded++;
 		board();
 		ridesTaken[passengerId] += 1;
-		if (boarded == capacity || boarded == passengers) {
+		if (boarded == capacity) {
 			sem_post(&all_boarded); // If this is the last passenger to board, signal the car to run
 			boarded = 0;
 		}
@@ -162,7 +162,7 @@ void* passengerThread(void* id) {
 		pthread_mutex_lock(&riding_lock); // Lock access to shared variable before incrementing
 		unboarded++;
 		unboard();
-		if (unboarded == capacity || unboarded == passengers) {
+		if (unboarded == capacity) {
 			sem_post(&all_unboarded); // If this is the last passenger to unboard, signal the car to allow boarding
 			unboarded = 0;
 		}
@@ -191,7 +191,7 @@ int main() {
 	srand(time(NULL));
 	passengers = 2 + rand() % (MAX_PASSENGERS-2);
 	capacity = 1 + rand() % (MAX_CAPACITY - 1);
-	total_rides = 1 + rand() % (MAX_RIDES-1);
+	total_rides = 1 + rand() % MAX_RIDES;
 	total_cars = 2 + rand() % (MAX_CARS - 2);
 
 	//set drawing lines of the car
@@ -240,7 +240,7 @@ int main() {
 	
 	printf("That's all rides for today, the roller coaster is shutting down.\n");
 	for (i = 0; i < passengers; i++) {
-		printf("Passgenger %d has taken %d ride(s)\n", i+1, ridesTaken[i]);
+		printf("Passenger %d has taken %d ride(s)\n", i+1, ridesTaken[i]);
 	}
 
 
