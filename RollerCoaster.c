@@ -1,11 +1,3 @@
-/*
-anotacoes:
--link do codigo original: https://github.com/sp0oks/multithread-drifting
-TODO
--colocar um mutex no print para nao ter problemas na visualizacao
-
-*/
-
 #include <stdio.h>
 #include <unistd.h>
 #include <pthread.h>
@@ -202,7 +194,7 @@ int main() {
 	line0 = "     ____/   ___   ";
 	line0Busy = "     ____/ O ___   ";
 	line1 = "  --|_   \\__'  _\\--";
-	line2 = "     --(*)——(*)--  ";
+	line2 = "     --(*)--(*)--  ";
 
 
 	pthread_t executioner; //thread que mata as threads passageiras
