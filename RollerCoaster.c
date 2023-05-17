@@ -1,3 +1,11 @@
+/*
+anotacoes:
+-link do codigo original: https://github.com/sp0oks/multithread-drifting
+TODO
+-colocar um mutex no print para nao ter problemas na visualizacao
+
+*/
+
 #include <stdio.h>
 #include <unistd.h>
 #include <pthread.h>
@@ -53,25 +61,25 @@ int next(int pos) {
 }
 
 void load(int id, int run) {
-	printf("Ride #%d of car %d wil begin, time to load!\n", run+1, id);
+	printf("Ride #%d of car %d wil begin, time to load!\n", run+1, id+1);
 	printf("This car's capacity is %d\n", capacity);
 	sleep(2);
 }
 void run(int id) {
-	printf("The car %d is full, time to ride!\n", id);
+	printf("The car %d is full, time to ride!\n", id+1);
 	sleep(2);
-	printf("The car %d is now riding the roller coaster!\n", id);
+	printf("The car %d is now riding the roller coaster!\n", id+1);
 	sleep(3);
 }
 void unload(int id) {
-	printf("The ride is over, time to unload car %d\n", id);
+	printf("The ride is over, time to unload car %d\n", id+1);
 	sleep(2);
 }
 void board() {
 	printf("%d passengers have boarded the car\n", boarded);
 	cartImage(boarded);
 	
-	sleep(rand()%2);
+	sleep(2);
 }
 
 void unboard() {
@@ -79,7 +87,7 @@ void unboard() {
 	int ocupiedCars = min(capacity, passengers) - unboarded;
 	cartImage(ocupiedCars);
 	
-	sleep(rand()%2);
+	sleep(2);
 }
 
 void cartImage(int filledPosition) {
