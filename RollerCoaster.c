@@ -192,10 +192,10 @@ void* kill() {
 int main() {
 	// Set new instance of passenger threads, car capacity and total rides values
 	srand(time(NULL));
-	passengers = 9;
-	capacity = 1;
-	total_rides = 1;
-	total_cars = 3;
+	passengers = 2 + rand() % (MAX_PASSENGERS-2);
+	capacity = 1 + rand() % (MAX_CAPACITY - 1);
+	total_rides = 1 + rand() % (MAX_RIDES-1);
+	total_cars = 2 + rand() % (MAX_CARS - 2);
 
 	//set drawing lines of the car
 	line0 = "     ____/   ___   ";
