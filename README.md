@@ -44,12 +44,14 @@ Suponha que existam n threads de passageiros e n threads de carrinho. Os passage
 ### Condições relevantes à solução:
 - Como os carrinhos percorrem a mesma pista e, portanto, não podem se ultrapassar, eles farão o desembarque na mesma ordem que fizeram o embarque.
 - Múltipos carrinhos podem estar correndo na pista ao mesmo tempo.
-- O carrinho só poderá percorrer a pista quando estiver cheio ou quando a quantidade total de passageiros for menor que a capacidade do carrinho e todos os passageiros tenham embarcado. 
+- O carrinho só poderá percorrer a pista quando estiver cheio ou quando a quantidade total de passageiros for menor que a capacidade do carrinho e todos os passageiros tiverem embarcado. 
 - Somente um carrinho pode estar embarcando por vez.
 - Somente um carrinho pode estar desembarcando por vez.
 - o carrinho indica quando está está realizando um embarque, andando na pista ou realizando um desembarque.
 - Os passageiros não podem embarcar até que o carrinho tenha sinalizado que está realizando um embarque, assim como não poderão desembarcar até que um desembarque seja sinalizado.
 - O último passageiro a embarcar comunica o fim do embarque.
+- Cada carrinho pode dar a volta na montanha russa n vezes, mas não em sequência. Ou seja, ele deve dar uma volta, desembarcar todos os passageiros e aguardar os outros carrinhos também darem sua volta, até que seja sua vez novamente.
+- O número de passageiros, o número de carrinhos, a capacidade dos carrinhos e o número de voltas na montanha russa são valores variáveis.
 
 ## Visualização
 
