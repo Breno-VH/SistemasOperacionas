@@ -1,11 +1,3 @@
-/*
-anotacoes:
--link do codigo original: https://github.com/sp0oks/multithread-drifting
-TODO
--colocar um mutex no print para nao ter problemas na visualizacao
-
-*/
-
 #include <stdio.h>
 #include <unistd.h>
 #include <pthread.h>
