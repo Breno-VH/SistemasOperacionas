@@ -43,6 +43,23 @@ char* line1;
 char* line2;
 
 /* Helper functions */
+
+void cartImage(int filledPosition) {
+	for (int i = 0; i < capacity; i++) {
+		if (i < filledPosition) printf("%s", line0Busy);
+		else printf("%s", line0);
+    }
+    printf("\n");
+    for (int i = 0; i < capacity; i++) {
+        printf("%s", line1);
+    }
+    printf("\n");
+	for (int i = 0; i < capacity; i++) {
+        printf("%s", line2);
+    }
+	printf("\n");
+}
+
 int min(int a, int b) {
 	return (a<b? a:b);
 }
@@ -82,21 +99,7 @@ void unboard() {
 	sleep(2);
 }
 
-void cartImage(int filledPosition) {
-	for (int i = 0; i < capacity; i++) {
-		if (i < filledPosition) printf("%s", line0Busy);
-		else printf("%s", line0);
-    }
-    printf("\n");
-    for (int i = 0; i < capacity; i++) {
-        printf("%s", line1);
-    }
-    printf("\n");
-	for (int i = 0; i < capacity; i++) {
-        printf("%s", line2);
-    }
-	printf("\n");
-}
+
 /* end helper functions*/
 
 
@@ -131,7 +134,10 @@ void* carThread(void* id) {
 	}
 
 	//last car in last ride sends kill signal to passenger threads
-	if (carId == ((int)total_rides -1)) sem_post(&killRollerCoaster);
+	if (carId == ((int)total_cars -1)) {
+        printf("entrou aqui!\n");
+        sem_post(&killRollerCoaster);
+    } 
 
 	return NULL;
 }
@@ -162,9 +168,9 @@ void* passengerThread(void* id) {
 		if (unboarded == capacity || unboarded == passengers) {
 			sem_post(&all_unboarded); // If this is the last passenger to unboard, signal the car to allow boarding
 			unboarded = 0;
-		}
+		    }
 		pthread_mutex_unlock(&riding_lock); // Unlock access to shared variable
-	}
+	    }
     	return NULL;
 }
 
@@ -172,11 +178,11 @@ void* passengerThread(void* id) {
  thread that kills remaining passengers
  awaiting for their ride once all rides have finished
 */
-void* executioner() {
+void* kill() {
 	int i = 0;
 	sem_wait(&killRollerCoaster);
 	for (i = 0; i < passengers; i++) {
-		pthread_join(passenger[i], NULL);
+		pthread_cancel(passenger[i]);
 	}
 	return NULL;
 }
@@ -186,10 +192,10 @@ void* executioner() {
 int main() {
 	// Set new instance of passenger threads, car capacity and total rides values
 	srand(time(NULL));
-	passengers = 2 + rand() % (MAX_PASSENGERS-2);
-	capacity = 1 + rand() % (MAX_CAPACITY - 1);
-	total_rides = 1 + rand() % (MAX_RIDES-1);
-	total_cars = 2 + rand() % (MAX_CARS - 2);
+	passengers = 9;
+	capacity = 1;
+	total_rides = 1;
+	total_cars = 3;
 
 	//set drawing lines of the car
 	line0 = "     ____/   ___   ";
@@ -215,7 +221,7 @@ int main() {
 		sem_init(&loading_area[i], 0, 0);
 		sem_init(&unloading_area[i], 0, 0);
 	} 
-	sem_init(&executioner, 0, 0);
+	sem_init(&killRollerCoaster, 0, 0);
 	sem_init(&board_queue, 0, 0);
 	sem_init(&all_boarded, 0, 0);
 	sem_init(&unboard_queue, 0, 0);
@@ -229,11 +235,13 @@ int main() {
 
 	sem_post(&loading_area[0]);
 	sem_post(&unloading_area[0]);
+    pthread_create(&executioner, NULL, kill, NULL);
 	for (i = 0; i < total_cars; i++) pthread_create(&car[i], NULL, carThread, (void*) i);
 	for(i = 0; i < passengers; i++) pthread_create(&passenger[i], NULL, passengerThread, (void*) i);
 	// Join the car thread when all rides have been completed
 	for (i = 0; i < total_cars; i++) pthread_join(car[i], NULL);
 	pthread_join(executioner, NULL);
+    for(i = 0; i < passengers; i++) pthread_join(passenger[i], NULL);
 	
 	printf("That's all rides for today, the roller coaster is shutting down.\n");
 	for (i = 0; i < passengers; i++) {
