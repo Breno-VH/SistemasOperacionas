@@ -26,7 +26,7 @@
 [Slides sobre o problema proposto]() 
 
 ## Como executar?
-Para executar o código é preciso, primeiramente, baixar todas as bibliotecas necessárias, mencionadas abaixo. Após isso, basta compilar o código, colocando a flag -pthread, e rodar o executável gerado.
+Para executar o código é preciso ter todas as bibliotecas necessárias instaladas, mencionadas abaixo. Após isso, basta compilar o código, colocando a flag -pthread, e rodar o executável gerado.
 
 ### Bibliotecas necessárias
 
