@@ -1,3 +1,11 @@
+/*
+anotacoes:
+-link do codigo original: https://github.com/sp0oks/multithread-drifting
+TODO
+-colocar um mutex no print para nao ter problemas na visualizacao
+
+*/
+
 #include <stdio.h>
 #include <unistd.h>
 #include <pthread.h>
@@ -111,7 +119,8 @@ void* carThread(void* id) {
 		sem_wait(&loading_area[carId]); //waits until its their turn to load
 		load(carId, myRun);
 		
-		for(i = 0; i < capacity; i++) sem_post(&board_queue); // Signal C passenger threads to board the car
+		for(i = 0; i < limitQueue; i++) sem_post(&board_queue); // Signal C passenger threads to board the car
+
 		sem_wait(&all_boarded); // Wait for all passengers to board
 		
 		sem_post(&loading_area[next(carId)]); //next area can begin boarding
