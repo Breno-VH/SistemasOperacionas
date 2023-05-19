@@ -23,7 +23,7 @@
 
 ## Apresentação
 
-[Slides sobre o problema proposto]() 
+[Slides sobre o problema proposto](https://www.canva.com/design/DAFjOdPkzm0/7qJ7UqiB8hvTa0Rpfr55DA/view?utm_content=DAFjOdPkzm0&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink) 
 
 ## Como executar?
 Para executar o código é preciso ter todas as bibliotecas necessárias instaladas, mencionadas abaixo. Após isso, basta compilar o código, colocando a flag -pthread, e rodar o executável gerado.
