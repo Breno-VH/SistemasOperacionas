@@ -8,6 +8,7 @@
   - [Table of Contents](#table-of-contents)
   - [Integrantes do grupo](#integrantes-do-grupo)
   - [Apresentação](#apresentação)
+  - [Vídeo](#vídeo)
   - [Como executar?](#como-executar)
     - [Bibliotecas necessárias](#bibliotecas-necessárias)
   - [Descrição do problema](#descrição-do-problema)
@@ -26,7 +27,7 @@
 [Slides sobre o problema proposto](https://www.canva.com/design/DAFjOdPkzm0/7qJ7UqiB8hvTa0Rpfr55DA/view?utm_content=DAFjOdPkzm0&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink) 
 
 ## Vídeo
-[Acesese o vídeo no Drive](https://drive.google.com/file/d/19Yfc9ftCURasao4gu2McGEFDCbDsYY9V/view?usp=drivesdk) 
+[Acesse o vídeo no Drive](https://drive.google.com/file/d/19Yfc9ftCURasao4gu2McGEFDCbDsYY9V/view?usp=drivesdk) 
 
 ## Como executar?
 Para executar o código é preciso ter todas as bibliotecas necessárias instaladas, mencionadas abaixo. Após isso, basta compilar o código, colocando a flag -pthread, e rodar o executável gerado.
