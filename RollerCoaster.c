@@ -75,13 +75,13 @@ int next(int pos) {
 void load(int id, int run) {
 	printf("Ride #%d of car %d wil begin, time to load!\n", run+1, id+1);
 	printf("This car's capacity is %d\n", capacity);
-	sleep(2);
+	sleep(3);
 }
 void run(int id) {
-	printf("The car %d is full, time to ride!\n", id+1);
-	sleep(2);
-	printf("The car %d is now riding the roller coaster!\n", id+1);
-	sleep(3);
+	printf("The car %d is full, time to ride!\n\n", id+1);
+	sleep(5);
+	printf("The car %d is now riding the roller coaster!\n\n", id+1);
+	sleep(4);
 }
 void unload(int id) {
 	printf("The ride is over, time to unload car %d\n", id+1);
@@ -239,8 +239,9 @@ int main() {
 	sem_init(&all_unboarded, 0, 0);
 
 	printf("Today the roller coaster will ride %d times!\n", total_rides);
-	printf("There are %d passengers waiting in the roller coaster queue!\n\n", passengers);
+	printf("There are %d passengers waiting in the roller coaster queue!\n", passengers);
 	printf("There are %d cars waiting in the roller coaster queue!\n\n", total_cars);
+	sleep(5); 
 	
 	sem_post(&loading_area[0]); // Initially, only the semaphores for Car 0 are unlocked
 	sem_post(&unloading_area[0]);
@@ -271,6 +272,8 @@ int main() {
 		sem_destroy(&loading_area[i]);
 		sem_destroy(&unloading_area[i]);
 	} 
+
+	sleep(30);
 
 	return 0;
 }
